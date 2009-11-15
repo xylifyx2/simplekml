@@ -5,7 +5,7 @@ import java.net.URL;
 
 import org.xml.sax.SAXException;
 
-import profundo.geocaching.kml.KmlHandler;
+import profundo.kml.KmlHandler;
 import profundo.pushparser.XmlPushParser;
 
 public class LoadKml {

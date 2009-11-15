@@ -1,4 +1,4 @@
-package profundo.geocaching.kml;
+package profundo.kml;
 
 /*
  * 
