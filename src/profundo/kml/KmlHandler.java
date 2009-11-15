@@ -28,15 +28,21 @@ import profundo.pushparser.XmlPushParser;
 
 public class KmlHandler extends ElementAdapter {
 	int level = 0;
-	private PlacemarkHandler parser;
+	private PlacemarkHandler placemarkHandler;
+	private LinkHandler linkHandler;
 	private List<Placemark> placemarks = new ArrayList<Placemark>();
+	public String link;
 
 	@Override
 	public void startElement(String uri, String localName, String qName,
 			Attributes attributes) throws SAXException {
 		if ("Placemark".equals(localName)) {
-			parser = new PlacemarkHandler();
-			XmlPushParser.getParser().pushHandler(parser, uri, localName,
+			placemarkHandler = new PlacemarkHandler();
+			XmlPushParser.getParser().pushHandler(placemarkHandler, uri, localName,
+					qName, attributes);
+		} else if ("href".equals(localName)) {
+			linkHandler = new LinkHandler();
+			XmlPushParser.getParser().pushHandler(linkHandler, uri, localName,
 					qName, attributes);
 		}
 	}
@@ -44,11 +50,14 @@ public class KmlHandler extends ElementAdapter {
 	@Override
 	public void endElement(String uri, String localName, String qName)
 			throws SAXException {
-		if (parser != null) {
-			Placemark bean = parser.getBean();
+		if (placemarkHandler != null) {
+			Placemark bean = placemarkHandler.getBean();
 			placemarks.add(bean);
-			System.out.println(bean);
-			parser = null;
+			placemarkHandler = null;
+		} else if (linkHandler != null) {
+			this.link = linkHandler.link;
+			linkHandler = null;
+			// System.out.println(link);
 		}
 	}
 }
