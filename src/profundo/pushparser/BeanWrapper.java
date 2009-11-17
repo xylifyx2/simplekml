@@ -30,7 +30,6 @@ public class BeanWrapper {
 	private BeanInfo beanInfo;
 	private Map<String, PropertyDescriptor> propertyDescriptors = new HashMap<String, PropertyDescriptor>();
 	private Map<String, Field> fields = new HashMap<String, Field>();
-	
 
 	public BeanWrapper(Class<?> type) {
 		try {
@@ -64,8 +63,8 @@ public class BeanWrapper {
 	}
 
 	@SuppressWarnings("unchecked")
-	private <T> T coerce(Class<T> propertyType, Object value) {
-		if (propertyType == value.getClass()) {
+	protected <T> T coerce(Class<T> propertyType, Object value) {
+		if (value == null || propertyType == value.getClass()) {
 			return (T) value;
 		} else if (propertyType == Integer.TYPE) {
 			return (T) new Integer(String.valueOf(value));

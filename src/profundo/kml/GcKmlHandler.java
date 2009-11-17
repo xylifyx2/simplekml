@@ -17,20 +17,22 @@ package profundo.kml;
  * the License.
  */
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import profundo.pushparser.ElementAdapter;
 import profundo.pushparser.XmlPushParser;
 
-public class KmlHandler extends ElementAdapter {
+public class GcKmlHandler extends ElementAdapter {
 	int level = 0;
 	private PlacemarkHandler placemarkHandler;
 	private LinkHandler linkHandler;
-	private List<Placemark> placemarks = new ArrayList<Placemark>();
+	private GcKml gckml = new GcKml();//List<Placemark> placemarks = new ArrayList<Placemark>();
+	
+	public GcKml getGckml() {
+		return gckml;
+	}
+
 	public String link;
 
 	@Override
@@ -52,7 +54,7 @@ public class KmlHandler extends ElementAdapter {
 			throws SAXException {
 		if (placemarkHandler != null) {
 			Placemark bean = placemarkHandler.getBean();
-			placemarks.add(bean);
+			gckml.placemarks.add(bean);
 			placemarkHandler = null;
 		} else if (linkHandler != null) {
 			this.link = linkHandler.link;

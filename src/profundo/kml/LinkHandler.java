@@ -14,8 +14,4 @@ public class LinkHandler extends ElementAdapter {
 		String s = new String(ch,start,length);
 		link = link == null ? s : link + s;
 	}
-
-	
-	
-	
 }
