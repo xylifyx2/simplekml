@@ -33,7 +33,7 @@ public class JTidySAXParserFactory extends SAXParserFactory {
 
     @Override
     public SAXParser newSAXParser() throws ParserConfigurationException, SAXException {
-        throw new UnsupportedOperationException("Not supported yet.");
+        return new JTidySAXParser();
     }
 
     @Override
@@ -82,6 +82,7 @@ public class JTidySAXParserFactory extends SAXParserFactory {
 
         private ContentHandler contentHandler;
         private ErrorHandler errorHandler;
+        private EntityResolver entityResolver;
 
         public boolean getFeature(String string) throws SAXNotRecognizedException, SAXNotSupportedException {
             return false;
@@ -99,11 +100,11 @@ public class JTidySAXParserFactory extends SAXParserFactory {
         }
 
         public void setEntityResolver(EntityResolver er) {
-            throw new UnsupportedOperationException("Not supported yet.");
+            this.entityResolver = er;
         }
 
         public EntityResolver getEntityResolver() {
-            return null;
+            return entityResolver;
         }
 
         public void setDTDHandler(DTDHandler dtdh) {
@@ -150,7 +151,7 @@ public class JTidySAXParserFactory extends SAXParserFactory {
     static private void parseInputStream(InputStream byteStream, String encoding, ContentHandler contentHandler, ErrorHandler errorHandler) throws SAXException {
         Report report = new Report();
         Configuration configuration = new Configuration(report);
-
+        configuration.setInCharEncodingName(encoding);
 
         // new URL("http://www.jp.dk/").openStream();
         StreamIn streamIn = StreamInFactory.getStreamIn(configuration, byteStream);
@@ -164,12 +165,12 @@ public class JTidySAXParserFactory extends SAXParserFactory {
 
         Node node;
         ArrayList<String> stack = new ArrayList<String>();
-
+        contentHandler.startDocument();
         while ((node = lexer.getToken(Lexer.IGNORE_WHITESPACE)) != null) {
             switch (node.type) {
                 case Node.START_TAG:
                     stack.add(node.element);
-                    contentHandler.startElement("", node.element, node.element, null);
+                    contentHandler.startElement("", node.element, node.element, new JTidySAXAttributes(node));
                     break;
                 case Node.END_TAG:
                     int closeDepth = stack.lastIndexOf(node.element);
@@ -195,36 +196,172 @@ public class JTidySAXParserFactory extends SAXParserFactory {
             contentHandler.endElement("", node.element, node.element);
             stack.remove(stack.size() - 1);
         }
+
+        contentHandler.endDocument();
+    }
+
+    static class JTidySAXAttributes implements Attributes {
+
+        Node node;
+
+        public JTidySAXAttributes(Node node) {
+            this.node = node;
+        }
+
+        public int getLength() {
+            int length = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                length++;
+            }
+            return length;
+        }
+
+        public String getURI(int index) {
+            return "";
+
+        }
+
+        public String getLocalName(int index) {
+            int i = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (i == index) {
+                    return a.attribute;
+                }
+                i++;
+            }
+            return null;
+        }
+
+        public String getQName(int index) {
+            int i = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (i == index) {
+                    return a.attribute;
+                }
+                i++;
+            }
+            return null;
+        }
+
+        public String getType(int index) {
+            return "CDATA";
+        }
+
+        public String getValue(int index) {
+            int i = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (i == index) {
+                    return a.value;
+                }
+                i++;
+            }
+            return null;
+        }
+
+        public int getIndex(String uri, String localName) {
+            int i = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (localName.equals(a.attribute) && (uri == null || uri.length() == 0)) {
+                    return i;
+                }
+                i++;
+            }
+            return -1;
+        }
+
+        public int getIndex(String qName) {
+            int i = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (qName.equals(a.attribute)) {
+                    return i;
+                }
+                i++;
+            }
+            return -1;
+        }
+
+        public String getType(String uri, String localName) {
+            return "CDATA";
+        }
+
+        public String getType(String qName) {
+            return "CDATA";
+        }
+
+        public String getValue(String uri, String localName) {
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (localName.equals(a.attribute) && (uri == null || uri.length() == 0)) {
+                    return a.value;
+                }
+            }
+            return null;
+        }
+
+        public String getValue(String qName) {
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (qName.equals(a.attribute)) {
+                    return a.value;
+                }
+            }
+            return null;
+        }
     }
 
     public static void main(
             String[] args) throws Exception {
-        InputStream byteStream = JTidySAXParserFactory.class.getResourceAsStream("test.html");
-        Report report = new Report();
-        Configuration configuration = new Configuration(report);
+        DefaultHandler df = new DefaultHandler() {
 
+            int i = 0;
 
-        // new URL("http://www.jp.dk/").openStream();
-        StreamIn streamIn = StreamInFactory.getStreamIn(configuration, byteStream);
-
-        TagTable tt = new TagTable();
-        tt.setConfiguration(configuration);
-        configuration.tt = tt;
-
-        Lexer lexer = new Lexer(streamIn, configuration, report);
-        lexer.errout = new PrintWriter(System.out);
-
-        Node node;
-
-        org.xml.sax.ContentHandler ch = new DefaultHandler() {
-
-            public void endElement(String ns, String localName, String qname) throws SAXException {
+            @Override
+            public void characters(char[] ch, int start, int length) throws SAXException {
+                for (int j = 0; j < i; j++) {
+                    System.out.print(" ");
+                }
+                System.out.println(new String(ch,start,length));
             }
 
-            public void startElement(String string, String string1, String string2, Attributes atrbts) throws SAXException {
+
+
+            @Override
+            public void endDocument() throws SAXException {
+                System.out.println("--end--");
+            }
+
+            @Override
+            public void endElement(String uri, String localName, String qName) throws SAXException {
+                i--;
+                for (int j = 0; j < i; j++) {
+                    System.out.print(" ");
+                }
+                System.out.println("</" + qName + ">");
+            }
+
+            @Override
+            public void startDocument() throws SAXException {
+                System.out.println("--start--");
+            }
+
+            @Override
+            public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
+                for (int j = 0; j < i; j++) {
+                    System.out.print(" ");
+                }
+                System.out.print("<" + qName);
+                int n=atts.getLength();
+                for(int j=0; j<n; j++) {
+                    System.out.print(" "+atts.getQName(j)+"='"+atts.getValue(j)+"'");
+                }
+                System.out.println(">");
+                i++;
             }
         };
 
+        SAXParserFactory sf = SAXParserFactory.newInstance(JTidySAXParserFactory.class.getName(), null);
+        SAXParser sp = sf.newSAXParser();
 
+        InputSource is = new InputSource("http://www.jp.dk/");
+
+        sp.parse(is, df);
     }
 }
