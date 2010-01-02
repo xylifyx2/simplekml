@@ -4,6 +4,12 @@
   <artifactId>saxscraper</artifactId>
   <version>1.0</version>
 
+  <parent>
+      <groupId>dk.profundo.htmlscraper</groupId>
+      <artifactId>htmlscraper</artifactId>
+      <version>1.0</version>
+  </parent>
+
   <name>SAX Scraper</name>
     <build>
         <plugins>
