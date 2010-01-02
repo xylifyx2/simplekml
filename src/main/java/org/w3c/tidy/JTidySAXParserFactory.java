@@ -31,48 +31,48 @@ import org.xml.sax.helpers.DefaultHandler;
  */
 public class JTidySAXParserFactory extends SAXParserFactory {
 
-    @Override
+    
     public SAXParser newSAXParser() throws ParserConfigurationException, SAXException {
         return new JTidySAXParser();
     }
 
-    @Override
+    
     public void setFeature(String string, boolean bln) throws ParserConfigurationException, SAXNotRecognizedException, SAXNotSupportedException {
     }
 
-    @Override
+    
     public boolean getFeature(String string) throws ParserConfigurationException, SAXNotRecognizedException, SAXNotSupportedException {
         return false;
     }
 
     static class JTidySAXParser extends SAXParser {
 
-        @Override
+        
         public Parser getParser() throws SAXException {
             throw new UnsupportedOperationException("Parser not supported");
         }
 
-        @Override
+        
         public XMLReader getXMLReader() throws SAXException {
             return new JTidyXMLReader();
         }
 
-        @Override
+        
         public boolean isNamespaceAware() {
             return false;
         }
 
-        @Override
+        
         public boolean isValidating() {
             return false;
         }
 
-        @Override
+        
         public void setProperty(String propertyKey, Object propertyValue) throws SAXNotRecognizedException, SAXNotSupportedException {
             throw new SAXNotRecognizedException(propertyKey);
         }
 
-        @Override
+        
         public Object getProperty(String propertyKey) throws SAXNotRecognizedException, SAXNotSupportedException {
             throw new SAXNotRecognizedException(propertyKey);
         }
@@ -164,14 +164,17 @@ public class JTidySAXParserFactory extends SAXParserFactory {
         lexer.errout = new PrintWriter(System.out);
 
         Node node;
-        ArrayList<String> stack = new ArrayList<String>();
+        ArrayList stack = new ArrayList();
         contentHandler.startDocument();
         while ((node = lexer.getToken(Lexer.IGNORE_WHITESPACE)) != null) {
             switch (node.type) {
                 case Node.START_TAG:
                     stack.add(node.element);
                     contentHandler.startElement("", node.element, node.element, new JTidySAXAttributes(node));
-                    break;
+                    Dict s = tt.lookup(node.element);
+                    if (s == null || (s.model & Dict.CM_EMPTY) == 0) {
+                        break;
+                    }
                 case Node.END_TAG:
                     int closeDepth = stack.lastIndexOf(node.element);
                     if (closeDepth >= 0) {
@@ -185,7 +188,6 @@ public class JTidySAXParserFactory extends SAXParserFactory {
                 case Node.TEXT_NODE: {
                     final String cs = TidyUtils.getString(node.textarray, node.start, node.end - node.start);
                     char[] cha = cs.toCharArray();
-
                     contentHandler.characters(cha, 0, cha.length);
                     break;
                 }
@@ -313,7 +315,7 @@ public class JTidySAXParserFactory extends SAXParserFactory {
 
             int i = 0;
 
-            @Override
+            
             public void characters(char[] ch, int start, int length) throws SAXException {
                 for (int j = 0; j < i; j++) {
                     System.out.print(" ");
@@ -323,12 +325,12 @@ public class JTidySAXParserFactory extends SAXParserFactory {
 
 
 
-            @Override
+            
             public void endDocument() throws SAXException {
                 System.out.println("--end--");
             }
 
-            @Override
+            
             public void endElement(String uri, String localName, String qName) throws SAXException {
                 i--;
                 for (int j = 0; j < i; j++) {
@@ -337,12 +339,12 @@ public class JTidySAXParserFactory extends SAXParserFactory {
                 System.out.println("</" + qName + ">");
             }
 
-            @Override
+            
             public void startDocument() throws SAXException {
                 System.out.println("--start--");
             }
 
-            @Override
+            
             public void startElement(String uri, String localName, String qName, Attributes atts) throws SAXException {
                 for (int j = 0; j < i; j++) {
                     System.out.print(" ");
