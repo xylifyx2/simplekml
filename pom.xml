@@ -1,16 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns:pom="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>dk.profundo.htmlscraper</groupId>
-  <artifactId>htmlscraper</artifactId>
-  <version>1.0</version>
-  <packaging>pom</packaging>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dk.profundo.htmlscraper</groupId>
+    <artifactId>htmlscraper</artifactId>
+    <version>1.0</version>
+    <packaging>pom</packaging>
 
-  <modules>
-      <module>saxscraper</module>
-      <module>jtidy</module>
-  </modules>
+    <modules>
+        <module>saxscraper</module>
+        <module>jtidy</module>
+        <module>drpodcasts</module>
+    </modules>
 
-  <name>HTML Scraper</name>
+    <name>HTML Scraper</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+    
     <build>
         <plugins>
             <plugin>
@@ -37,5 +49,3 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 </project>
-
-

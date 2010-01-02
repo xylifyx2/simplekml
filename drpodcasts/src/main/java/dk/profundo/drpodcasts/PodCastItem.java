@@ -13,4 +13,5 @@ public class PodCastItem {
     String name;
     String link;
     String feed;
+    Object title;
 }
