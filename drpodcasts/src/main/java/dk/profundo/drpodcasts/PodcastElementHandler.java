@@ -26,7 +26,7 @@ public class PodcastElementHandler implements ElementHandler {
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if ("content".equals(attributes.getValue("class"))) {
-            XmlPushParser.getParser().pushHandler(this, uri, localName, qName, attributes);
+            XmlPushParser.getParser().pushHandler(new ItemElementHandler(), uri, localName, qName, attributes);
         }
     }
 
