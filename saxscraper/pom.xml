@@ -1,16 +1,15 @@
 <project xmlns:pom="http://maven.apache.org/POM/4.0.0">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>dk.profundo.htmlscraper</groupId>
-  <artifactId>saxscraper</artifactId>
-  <version>1.0</version>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>dk.profundo.cloudscraper</groupId>
+    <artifactId>saxscraper</artifactId>
+    
+    <parent>
+        <groupId>dk.profundo.cloudscraper</groupId>
+        <artifactId>cloudscraper</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
 
-  <parent>
-      <groupId>dk.profundo.htmlscraper</groupId>
-      <artifactId>htmlscraper</artifactId>
-      <version>1.0</version>
-  </parent>
-
-  <name>SAX Scraper</name>
+    <name>SAX Scraper</name>
     <build>
         <plugins>
             <plugin>

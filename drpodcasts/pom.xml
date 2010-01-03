@@ -2,16 +2,17 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <artifactId>htmlscraper</artifactId>
-        <groupId>dk.profundo.htmlscraper</groupId>
-        <version>1.0</version>
-    </parent>
     <groupId>dk.profundo.htmlscraper</groupId>
     <artifactId>drpodcasts</artifactId>
-    <version>1.0-SNAPSHOT</version>
-    <name>drpodcasts</name>
-    <url>http://maven.apache.org</url>
+    <name>DR Podcasts</name>
+
+    <parent>
+        <groupId>dk.profundo.cloudscraper</groupId>
+        <artifactId>cloudscraper</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+    <url>http://www.dr.dk/podcast/</url>
 
     <dependencies>
         <dependency>
