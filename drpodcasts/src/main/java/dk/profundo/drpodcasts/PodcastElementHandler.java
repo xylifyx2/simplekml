@@ -37,5 +37,4 @@ public class PodcastElementHandler implements ElementHandler {
     public void endHandler(ElementHandler parentHandler, String uri, String localName, String qName) {
         
     }
-
 }

@@ -23,13 +23,14 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         for (String url : urls) {
-            InputSource is = new InputSource("http://www.jp.dk/");
+            InputSource is = new InputSource(url);
+            is.setEncoding("UTF-8");
 
             PodcastElementHandler eh = new PodcastElementHandler();
             XmlPushParser xpp = new XmlPushParser(eh);
 
             xpp.parseHtml(is,xpp);
         }
-        System.out.println("Hello World!");
+        System.out.println("Hello World!\u00f8");
     }
 }

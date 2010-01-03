@@ -10,8 +10,12 @@ package dk.profundo.drpodcasts;
  * @author ermh
  */
 public class PodCastItem {
-    String name;
     String link;
     String feed;
-    Object title;
+    String title;
+    String description;
+
+    public String toString() {
+        return "Item["+title+","+link+","+feed+","+description+"]";
+    }
 }

@@ -134,7 +134,7 @@ public class JTidySAXParserFactory extends SAXParserFactory {
             if (is.getByteStream() != null) {
                 parse(is.getByteStream(), is.getEncoding());
             } else if (is.getSystemId() != null) {
-                parse(new URL(is.getSystemId()).openStream(), "ISO-8859-1");
+                parse(new URL(is.getSystemId()).openStream(), is.getEncoding());
             }
         }
 
@@ -152,6 +152,7 @@ public class JTidySAXParserFactory extends SAXParserFactory {
         Report report = new Report();
         Configuration configuration = new Configuration(report);
         configuration.setInCharEncodingName(encoding);
+        configuration.setInOutEncodingName(encoding);
 
         // new URL("http://www.jp.dk/").openStream();
         StreamIn streamIn = StreamInFactory.getStreamIn(configuration, byteStream);
