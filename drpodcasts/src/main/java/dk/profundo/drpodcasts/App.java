@@ -26,11 +26,12 @@ public class App {
             InputSource is = new InputSource(url);
             is.setEncoding("UTF-8");
 
-            PodcastElementHandler eh = new PodcastElementHandler();
+            ContentMiddleHandler eh = new ContentMiddleHandler();
             XmlPushParser xpp = new XmlPushParser(eh);
 
+			System.out.println("======== " + url + "=======");
             xpp.parseHtml(is,xpp);
         }
-        System.out.println("Hello World!\u00f8");
+        
     }
 }

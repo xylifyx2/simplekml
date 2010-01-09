@@ -1,29 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <modelVersion>4.0.0</modelVersion>
-    <groupId>dk.profundo.htmlscraper</groupId>
-    <artifactId>drpodcasts</artifactId>
-    <name>DR Podcasts</name>
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>dk.profundo.htmlscraper</groupId>
+	<artifactId>drpodcasts</artifactId>
+	<name>DR Podcasts</name>
 
-    <parent>
-        <groupId>dk.profundo.cloudscraper</groupId>
-        <artifactId>cloudscraper</artifactId>
-        <version>1.0-SNAPSHOT</version>
-    </parent>
+	<parent>
+		<groupId>dk.profundo.cloudscraper</groupId>
+		<artifactId>cloudscraper</artifactId>
+		<version>1.0-SNAPSHOT</version>
+	</parent>
 
-    <url>http://www.dr.dk/podcast/</url>
+	<url>http://www.dr.dk/podcast/</url>
 
-    <dependencies>
-        <dependency>
-            <artifactId>saxscraper</artifactId>
-            <groupId>dk.profundo.htmlscraper</groupId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>dk.profundo.htmlscraper</groupId>
-            <artifactId>jtidy</artifactId>
-            <version>8.0-SNAPSHOT</version>
-        </dependency>
-    </dependencies>
+	<properties>
+		<exec.mainClass>dk.profundo.drpodcasts.App</exec.mainClass>
+	</properties>
+
+
+	<dependencies>
+		<dependency>
+			<artifactId>saxscraper</artifactId>
+			<groupId>dk.profundo.htmlscraper</groupId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>dk.profundo.htmlscraper</groupId>
+			<artifactId>jtidy</artifactId>
+			<version>8.0-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
 </project>
