@@ -75,319 +75,350 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
+ * Implementation of a SAX Parser that parses real work HTML using the lexer of
+ * JTidy.
  *
- * @author ermh
+ * @author Erik Martino <erik.martino@gmail.com>
  */
 public class JTidySAXParserFactory extends SAXParserFactory {
 
-	public SAXParser newSAXParser() throws ParserConfigurationException, SAXException {
-		return new JTidySAXParser();
-	}
+    public SAXParser newSAXParser() throws ParserConfigurationException, SAXException {
+        return new JTidySAXParser();
+    }
 
-	public void setFeature(String string, boolean bln) throws ParserConfigurationException, SAXNotRecognizedException, SAXNotSupportedException {
-	}
+    public void setFeature(String string, boolean bln) throws ParserConfigurationException, SAXNotRecognizedException, SAXNotSupportedException {
+    }
 
-	public boolean getFeature(String string) throws ParserConfigurationException, SAXNotRecognizedException, SAXNotSupportedException {
-		return false;
-	}
+    public boolean getFeature(String string) throws ParserConfigurationException, SAXNotRecognizedException, SAXNotSupportedException {
+        return false;
+    }
 
-	static class JTidySAXParser extends SAXParser {
+    static class JTidySAXParser extends SAXParser {
 
-		public Parser getParser() throws SAXException {
-			throw new UnsupportedOperationException("Parser not supported");
-		}
+        public Parser getParser() throws SAXException {
+            throw new UnsupportedOperationException("Parser not supported");
+        }
 
-		public XMLReader getXMLReader() throws SAXException {
-			return new JTidyXMLReader();
-		}
+        public XMLReader getXMLReader() throws SAXException {
+            return new JTidyXMLReader();
+        }
 
-		public boolean isNamespaceAware() {
-			return false;
-		}
+        public boolean isNamespaceAware() {
+            return false;
+        }
 
-		public boolean isValidating() {
-			return false;
-		}
+        public boolean isValidating() {
+            return false;
+        }
 
-		public void setProperty(String propertyKey, Object propertyValue) throws SAXNotRecognizedException, SAXNotSupportedException {
-			throw new SAXNotRecognizedException(propertyKey);
-		}
+        public void setProperty(String propertyKey, Object propertyValue) throws SAXNotRecognizedException, SAXNotSupportedException {
+            throw new SAXNotRecognizedException(propertyKey);
+        }
 
-		public Object getProperty(String propertyKey) throws SAXNotRecognizedException, SAXNotSupportedException {
-			throw new SAXNotRecognizedException(propertyKey);
-		}
-	}
+        public Object getProperty(String propertyKey) throws SAXNotRecognizedException, SAXNotSupportedException {
+            throw new SAXNotRecognizedException(propertyKey);
+        }
+    }
 
-	static class JTidyXMLReader implements XMLReader {
+    /**
+     * XMLReader using JTidy
+     */
+    static class JTidyXMLReader implements XMLReader {
 
-		private ContentHandler contentHandler;
-		private ErrorHandler errorHandler;
-		private EntityResolver entityResolver;
+        private ContentHandler contentHandler;
+        private ErrorHandler errorHandler;
+        private EntityResolver entityResolver;
 
-		public boolean getFeature(String string) throws SAXNotRecognizedException, SAXNotSupportedException {
-			return false;
-		}
+        public boolean getFeature(String string) throws SAXNotRecognizedException, SAXNotSupportedException {
+            return false;
+        }
 
-		public void setFeature(String string, boolean bln) throws SAXNotRecognizedException, SAXNotSupportedException {
-		}
+        public void setFeature(String string, boolean bln) throws SAXNotRecognizedException, SAXNotSupportedException {
+        }
 
-		public Object getProperty(String string) throws SAXNotRecognizedException, SAXNotSupportedException {
-			throw new SAXNotRecognizedException();
-		}
+        public Object getProperty(String string) throws SAXNotRecognizedException, SAXNotSupportedException {
+            throw new SAXNotRecognizedException();
+        }
 
-		public void setProperty(String string, Object o) throws SAXNotRecognizedException, SAXNotSupportedException {
-			throw new SAXNotRecognizedException();
-		}
+        public void setProperty(String string, Object o) throws SAXNotRecognizedException, SAXNotSupportedException {
+        }
 
-		public void setEntityResolver(EntityResolver er) {
-			this.entityResolver = er;
-		}
+        public void setEntityResolver(EntityResolver er) {
+            this.entityResolver = er;
+        }
 
-		public EntityResolver getEntityResolver() {
-			return entityResolver;
-		}
+        public EntityResolver getEntityResolver() {
+            return entityResolver;
+        }
 
-		public void setDTDHandler(DTDHandler dtdh) {
-		}
+        public void setDTDHandler(DTDHandler dtdh) {
+        }
 
-		public DTDHandler getDTDHandler() {
-			return null;
-		}
+        public DTDHandler getDTDHandler() {
+            return null;
+        }
 
-		public void setContentHandler(ContentHandler ch) {
-			this.contentHandler = ch;
-		}
+        public void setContentHandler(ContentHandler ch) {
+            this.contentHandler = ch;
+        }
 
-		public ContentHandler getContentHandler() {
-			return contentHandler;
-		}
+        public ContentHandler getContentHandler() {
+            return contentHandler;
+        }
 
-		public void setErrorHandler(ErrorHandler eh) {
-			this.errorHandler = eh;
-		}
+        public void setErrorHandler(ErrorHandler eh) {
+            this.errorHandler = eh;
+        }
 
-		public ErrorHandler getErrorHandler() {
-			return errorHandler;
-		}
+        public ErrorHandler getErrorHandler() {
+            return errorHandler;
+        }
 
-		public void parse(InputSource is) throws IOException, SAXException {
-			if (is.getByteStream() != null) {
-				parse(is.getByteStream(), is.getEncoding());
-			} else if (is.getSystemId() != null) {
-				parse(new URL(is.getSystemId()).openStream(), is.getEncoding());
-			}
-		}
+        public void parse(InputSource is) throws IOException, SAXException {
+            if (is.getByteStream() != null) {
+                parse(is.getByteStream(), is.getEncoding());
+            } else if (is.getSystemId() != null) {
+                parse(new URL(is.getSystemId()).openStream(), is.getEncoding());
+            }
+        }
 
-		public void parse(String systemId) throws IOException, SAXException {
-			URL url = new URL(systemId);
-			parse(new InputSource(systemId));
-		}
+        public void parse(String systemId) throws IOException, SAXException {
+            URL url = new URL(systemId);
+            parse(new InputSource(systemId));
+        }
 
-		private void parse(InputStream byteStream, String encoding) throws SAXException {
-			parseInputStream(byteStream, encoding, contentHandler, errorHandler);
-		}
-	}
+        private void parse(InputStream byteStream, String encoding) throws SAXException {
+            parseInputStream(byteStream, encoding, contentHandler, errorHandler);
+        }
+    }
 
-	static private void parseInputStream(InputStream byteStream, String encoding, ContentHandler contentHandler, ErrorHandler errorHandler) throws SAXException {
-		Report report = new Report();
-		Configuration configuration = new Configuration(report);
-		configuration.setInCharEncodingName(encoding);
-		configuration.setInOutEncodingName(encoding);
+    /**
+     * Parses an input stream using JTidy and generates sax events to the
+     * contentHandler.
+     *
+     * @param byteStream
+     * @param encoding
+     * @param contentHandler
+     * @param errorHandler
+     * @throws SAXException
+     */
+    static protected void parseInputStream(InputStream byteStream, String encoding, ContentHandler contentHandler, ErrorHandler errorHandler) throws SAXException {
+        Report report = new Report();
+        Configuration configuration = new Configuration(report);
+        configuration.setInCharEncodingName(encoding);
+        configuration.setInOutEncodingName(encoding);
 
-		// new URL("http://www.jp.dk/").openStream();
-		StreamIn streamIn = StreamInFactory.getStreamIn(configuration, byteStream);
+        StreamIn streamIn = StreamInFactory.getStreamIn(configuration, byteStream);
 
-		TagTable tt = new TagTable();
-		tt.setConfiguration(configuration);
-		configuration.tt = tt;
+        TagTable tt = new TagTable();
+        tt.setConfiguration(configuration);
+        configuration.tt = tt;
 
-		Lexer lexer = new Lexer(streamIn, configuration, report);
-		lexer.errout = new PrintWriter(System.out);
+        Lexer lexer = new Lexer(streamIn, configuration, report);
+        lexer.errout = new PrintWriter(System.out);
 
-		Node node;
-		ArrayList stack = new ArrayList();
-		contentHandler.startDocument();
-		while ((node = lexer.getToken(Lexer.IGNORE_WHITESPACE)) != null) {
-			switch (node.type) {
-				case Node.START_TAG:
-					stack.add(node.element);
-					contentHandler.startElement("", node.element, node.element, new JTidySAXAttributes(node));
-					Dict s = tt.lookup(node.element);
-					if (s == null || (s.model & Dict.CM_EMPTY) == 0) {
-						break;
-					}
-				case Node.END_TAG:
-					int closeDepth = stack.lastIndexOf(node.element);
-					if (closeDepth >= 0) {
-						for (int j = stack.size() - 1; j >= closeDepth; j--) {
-							contentHandler.endElement("", node.element, node.element);
-							stack.remove(stack.size() - 1);
-						}
-					}
-					break;
-				case Node.CDATA_TAG:
-				case Node.TEXT_NODE: {
-					final String cs = TidyUtils.getString(node.textarray, node.start, node.end - node.start);
-					char[] cha = cs.toCharArray();
-					contentHandler.characters(cha, 0, cha.length);
-					break;
-				}
-			}
-		}
+        Node node;
+        ArrayList stack = new ArrayList();
+        contentHandler.startDocument();
+        while ((node = lexer.getToken(Lexer.IGNORE_WHITESPACE)) != null) {
+            switch (node.type) {
+                case Node.START_TAG:
+                    stack.add(node.element);
+                    contentHandler.startElement("", node.element, node.element, new JTidySAXAttributes(node));
+                    Dict s = tt.lookup(node.element);
+                    if (s == null || (s.model & Dict.CM_EMPTY) == 0) {
+                        break;
+                    }
+                case Node.END_TAG:
+                    int closeDepth = stack.lastIndexOf(node.element);
+                    if (closeDepth >= 0) {
+                        for (int j = stack.size() - 1; j >= closeDepth; j--) {
+                            contentHandler.endElement("", node.element, node.element);
+                            stack.remove(stack.size() - 1);
+                        }
+                    }
+                    break;
+                case Node.CDATA_TAG:
+                case Node.TEXT_NODE: {
+                    final String cs = TidyUtils.getString(node.textarray, node.start, node.end - node.start);
+                    char[] cha = cs.toCharArray();
+                    contentHandler.characters(cha, 0, cha.length);
+                    break;
+                }
+            }
+        }
 
-		for (int j = stack.size() - 1; j >= 0; j--) {
-			contentHandler.endElement("", node.element, node.element);
-			stack.remove(stack.size() - 1);
-		}
+        for (int j = stack.size() - 1; j >= 0; j--) {
+            contentHandler.endElement("", node.element, node.element);
+            stack.remove(stack.size() - 1);
+        }
 
-		contentHandler.endDocument();
-	}
+        contentHandler.endDocument();
+    }
 
-	static class JTidySAXAttributes implements Attributes {
+    /**
+     * SAX element attributes wrapper for JTidy
+     */
+    static class JTidySAXAttributes implements Attributes {
 
-		Node node;
+        Node node;
 
-		public JTidySAXAttributes(Node node) {
-			this.node = node;
-		}
+        public JTidySAXAttributes(Node node) {
+            this.node = node;
+        }
 
-		public int getLength() {
-			int length = 0;
-			for (AttVal a = node.attributes; a != null; a = a.next) {
-				length++;
-			}
-			return length;
-		}
+        public int getLength() {
+            int length = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                length++;
+            }
+            return length;
+        }
 
-		public String getURI(int index) {
-			return "";
+        public String getURI(int index) {
+            return "";
 
-		}
+        }
 
-		public String getLocalName(int index) {
-			int i = 0;
-			for (AttVal a = node.attributes; a != null; a = a.next) {
-				if (i == index) {
-					return a.attribute;
-				}
-				i++;
-			}
-			return null;
-		}
+        public String getLocalName(int index) {
+            int i = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (i == index) {
+                    return a.attribute;
+                }
+                i++;
+            }
+            return null;
+        }
 
-		public String getQName(int index) {
-			int i = 0;
-			for (AttVal a = node.attributes; a != null; a = a.next) {
-				if (i == index) {
-					return a.attribute;
-				}
-				i++;
-			}
-			return null;
-		}
+        public String getQName(int index) {
+            int i = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (i == index) {
+                    return a.attribute;
+                }
+                i++;
+            }
+            return null;
+        }
 
-		public String getType(int index) {
-			return "CDATA";
-		}
+        public String getType(int index) {
+            return "CDATA";
+        }
 
-		public String getValue(int index) {
-			int i = 0;
-			for (AttVal a = node.attributes; a != null; a = a.next) {
-				if (i == index) {
-					return a.value;
-				}
-				i++;
-			}
-			return null;
-		}
+        public String getValue(int index) {
+            int i = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (i == index) {
+                    return a.value;
+                }
+                i++;
+            }
+            return null;
+        }
 
-		public int getIndex(String uri, String localName) {
-			int i = 0;
-			for (AttVal a = node.attributes; a != null; a = a.next) {
-				if (localName.equals(a.attribute) && (uri == null || uri.length() == 0)) {
-					return i;
-				}
-				i++;
-			}
-			return -1;
-		}
+        public int getIndex(String uri, String localName) {
+            int i = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (localName.equals(a.attribute) && (uri == null || uri.length() == 0)) {
+                    return i;
+                }
+                i++;
+            }
+            return -1;
+        }
 
-		public int getIndex(String qName) {
-			int i = 0;
-			for (AttVal a = node.attributes; a != null; a = a.next) {
-				if (qName.equals(a.attribute)) {
-					return i;
-				}
-				i++;
-			}
-			return -1;
-		}
+        public int getIndex(String qName) {
+            int i = 0;
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (qName.equals(a.attribute)) {
+                    return i;
+                }
+                i++;
+            }
+            return -1;
+        }
 
-		public String getType(String uri, String localName) {
-			return "CDATA";
-		}
+        public String getType(String uri, String localName) {
+            return "CDATA";
+        }
 
-		public String getType(String qName) {
-			return "CDATA";
-		}
+        public String getType(String qName) {
+            return "CDATA";
+        }
 
-		public String getValue(String uri, String localName) {
-			for (AttVal a = node.attributes; a != null; a = a.next) {
-				if (localName.equals(a.attribute) && (uri == null || uri.length() == 0)) {
-					return a.value;
-				}
-			}
-			return null;
-		}
+        public String getValue(String uri, String localName) {
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (localName.equals(a.attribute) && (uri == null || uri.length() == 0)) {
+                    return a.value;
+                }
+            }
+            return null;
+        }
 
-		public String getValue(String qName) {
-			for (AttVal a = node.attributes; a != null; a = a.next) {
-				if (qName.equals(a.attribute)) {
-					return a.value;
-				}
-			}
-			return null;
-		}
+        public String getValue(String qName) {
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (qName.equals(a.attribute)) {
+                    return a.value;
+                }
+            }
+            return null;
+        }
 
-		public String toString() {
-			StringBuilder b = new StringBuilder();
-			for (AttVal a = node.attributes; a != null; a = a.next) {
-				if (b.length() > 0) b.append(" ");
-				b.append(a.attribute);
-				b.append("=\"");
-				b.append(a.value);
-				b.append("\"");
-			}
-			return b.toString();
-		}
-	}
+        public String toString() {
+            StringBuilder b = new StringBuilder();
+            for (AttVal a = node.attributes; a != null; a = a.next) {
+                if (b.length() > 0) {
+                    b.append(" ");
+                }
+                b.append(a.attribute);
+                b.append("=\"");
+                b.append(a.value);
+                b.append("\"");
+            }
+            return b.toString();
+        }
+    }
 
-	public static void main(
-			String[] args) throws Exception {
-		SAXParserFactory sf = SAXParserFactory.newInstance(JTidySAXParserFactory.class.getName(), null);
-		SAXParser sp = sf.newSAXParser();
+    /**
+     * small demo that demonstrates how to use JTidySAXParserFactory. TODO create
+     * testcase instread
+     * 
+     * @param args
+     * @throws Exception
+     */
+    public static void main(
+            String[] args) throws Exception {
+        SAXParserFactory sf = SAXParserFactory.newInstance(JTidySAXParserFactory.class.getName(), null);
+        SAXParser sp = sf.newSAXParser();
 
-		InputSource is = new InputSource("http://www.jp.dk/");
-		DefaultHandler ih = new DefaultHandler() {
-			int depth=0;
-			public void endElement(String uri, String localName, String qName) throws SAXException {
-				depth--;
-				indent();
-				System.out.println("</"+qName+">");
-			}
+        InputSource is = new InputSource("http://www.jp.dk/");
+        DefaultHandler ih = new DefaultHandler() {
 
-			public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-				indent();
-				System.out.println("<"+qName+">");
-				depth++;
-			}
+            int depth = 0;
 
-			private void indent() { for(int i=0; i<depth; i++) System.out.print(" "); }
-		};
+            public void endElement(String uri, String localName, String qName) throws SAXException {
+                depth--;
+                indent();
+                System.out.println("</" + qName + ">");
+            }
+
+            public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
+                indent();
+                System.out.println("<" + qName + ">");
+                depth++;
+            }
+
+            private void indent() {
+                for (int i = 0; i < depth; i++) {
+                    System.out.print(" ");
+                }
+            }
+        };
 
 
-		XMLReader reader = sp.getXMLReader();
-		reader.setContentHandler(ih);
-		reader.parse(is);
-	}
+        XMLReader reader = sp.getXMLReader();
+        reader.setContentHandler(ih);
+        reader.parse(is);
+    }
 }
