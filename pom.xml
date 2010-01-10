@@ -12,7 +12,8 @@
         <module>saxscraper</module>
         <module>jtidy</module>
         <module>drpodcasts</module>
-    </modules>
+    <module>drfeeds</module>
+  </modules>
 
     <dependencies>
         <dependency>
