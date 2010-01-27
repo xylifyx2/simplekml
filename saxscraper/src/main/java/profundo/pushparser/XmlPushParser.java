@@ -20,6 +20,9 @@ package profundo.pushparser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Stack;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -51,12 +54,23 @@ public class XmlPushParser extends DefaultHandler {
 		parser.parse(in);
 	}
 
-        static SAXParserFactory sf = SAXParserFactory.newInstance("org.w3c.tidy.JTidySAXParserFactory", null);
+	static SAXParserFactory sf = jtidySaxParser();
 
+	private static SAXParserFactory jtidySaxParser() {
+		try {
+			return (SAXParserFactory) Class.forName(
+					"org.w3c.tidy.JTidySAXParserFactory").newInstance();
+		} catch (Exception e) {
+			Logger.getAnonymousLogger().log(Level.SEVERE,
+					"no org.w3c.tidy.JTidySAXParserFactory",e); // TODO
+			return SAXParserFactory.newInstance();
+		}
+	}
 
-        public void parseHtml(InputSource in, DefaultHandler ch) throws SAXException, IOException, ParserConfigurationException {
+	public void parseHtml(InputSource in, DefaultHandler ch)
+			throws SAXException, IOException, ParserConfigurationException {
 		SAXParser parser = sf.newSAXParser();
-		parser.parse(in,ch);
+		parser.parse(in, ch);
 	}
 
 	Stack<SubHander> handlerStack = new Stack<SubHander>();

@@ -23,7 +23,6 @@ public class DRPodcasts {
 
 	public static void main(String[] args) throws Exception {
 		loadDRFeedList();
-
 	}
 
 	public static void loadDRFeedList() throws SAXException, ParserConfigurationException, IOException {
@@ -32,7 +31,7 @@ public class DRPodcasts {
 			is.setEncoding("UTF-8");
 			ContentMiddleHandler eh = new ContentMiddleHandler();
 			XmlPushParser xpp = new XmlPushParser(eh);
-			System.out.println("======== " + url + "=======");
+			System.out.println("======== " + url + " =======");
 			xpp.parseHtml(is, xpp);
 		}
 	}

@@ -75,8 +75,10 @@ import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Implementation of a SAX Parser that parses real work HTML using the lexer of
- * JTidy.
+ * Implementation of a SAX Parser that parses real any HTML using the lexer of
+ * JTidy. It guesses where absent end tags should be placed, based on the CM_EMPTY
+ * flag in the JTidy tag table and by searching the ancestor axis for the matching
+ * start tag and closes all the unclosed element in between.
  *
  * @author Erik Martino <erik.martino@gmail.com>
  */
@@ -96,7 +98,7 @@ public class JTidySAXParserFactory extends SAXParserFactory {
     static class JTidySAXParser extends SAXParser {
 
         public Parser getParser() throws SAXException {
-            throw new UnsupportedOperationException("Parser not supported");
+            throw new UnsupportedOperationException();
         }
 
         public XMLReader getXMLReader() throws SAXException {
@@ -112,7 +114,7 @@ public class JTidySAXParserFactory extends SAXParserFactory {
         }
 
         public void setProperty(String propertyKey, Object propertyValue) throws SAXNotRecognizedException, SAXNotSupportedException {
-            throw new SAXNotRecognizedException(propertyKey);
+            // throw new SAXNotRecognizedException(propertyKey);
         }
 
         public Object getProperty(String propertyKey) throws SAXNotRecognizedException, SAXNotSupportedException {
@@ -218,13 +220,17 @@ public class JTidySAXParserFactory extends SAXParserFactory {
         lexer.errout = new PrintWriter(System.out);
 
         Node node;
+        JTidySAXAttributes attr = new JTidySAXAttributes();
         ArrayList stack = new ArrayList();
         contentHandler.startDocument();
+
+
         while ((node = lexer.getToken(Lexer.IGNORE_WHITESPACE)) != null) {
             switch (node.type) {
                 case Node.START_TAG:
                     stack.add(node.element);
-                    contentHandler.startElement("", node.element, node.element, new JTidySAXAttributes(node));
+                    attr.setNode(node);
+                    contentHandler.startElement("", node.element, node.element, attr);
                     Dict s = tt.lookup(node.element);
                     if (s == null || (s.model & Dict.CM_EMPTY) == 0) {
                         break;
@@ -233,8 +239,9 @@ public class JTidySAXParserFactory extends SAXParserFactory {
                     int closeDepth = stack.lastIndexOf(node.element);
                     if (closeDepth >= 0) {
                         for (int j = stack.size() - 1; j >= closeDepth; j--) {
-                            contentHandler.endElement("", node.element, node.element);
-                            stack.remove(stack.size() - 1);
+                        	String localName = (String) stack.get(j);
+                			contentHandler.endElement("", localName, localName);
+                			stack.remove(stack.size() - 1);
                         }
                     }
                     break;
@@ -249,7 +256,8 @@ public class JTidySAXParserFactory extends SAXParserFactory {
         }
 
         for (int j = stack.size() - 1; j >= 0; j--) {
-            contentHandler.endElement("", node.element, node.element);
+            String localName = (String) stack.get(j);
+			contentHandler.endElement("", localName, localName);
             stack.remove(stack.size() - 1);
         }
 
@@ -263,9 +271,15 @@ public class JTidySAXParserFactory extends SAXParserFactory {
 
         Node node;
 
-        public JTidySAXAttributes(Node node) {
+        public Node getNode() {
+            return node;
+        }
+
+        public void setNode(Node node) {
             this.node = node;
         }
+
+
 
         public int getLength() {
             int length = 0;
@@ -389,7 +403,8 @@ public class JTidySAXParserFactory extends SAXParserFactory {
      */
     public static void main(
             String[] args) throws Exception {
-        SAXParserFactory sf = SAXParserFactory.newInstance(JTidySAXParserFactory.class.getName(), null);
+    	System.getProperties().setProperty("javax.xml.parsers.SAXParserFactory", JTidySAXParserFactory.class.getName());
+        SAXParserFactory sf = SAXParserFactory.newInstance();
         SAXParser sp = sf.newSAXParser();
 
         InputSource is = new InputSource("http://www.jp.dk/");
