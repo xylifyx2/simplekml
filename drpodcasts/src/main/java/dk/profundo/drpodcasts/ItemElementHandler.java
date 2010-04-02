@@ -16,13 +16,16 @@ import profundo.pushparser.XmlPushParser;
  * @author ermh
  */
 public class ItemElementHandler extends ElementAdapter {
-
     PodCastItem item = new PodCastItem();
     State state = State.START;
     CharacterHandler characters;
+    private final ItemListener listener;
+
+    ItemElementHandler(ItemListener listener) {
+        this.listener = listener;
+    }
 
     enum State {
-
         START,
         TITLE,
         DESCRIPTION,
@@ -72,6 +75,6 @@ public class ItemElementHandler extends ElementAdapter {
     }
 
     public void endHandler(ElementHandler parentHandler, String uri, String localName, String qName) {
-        System.out.println(item);
+        listener.onItem(item);
     }
 }

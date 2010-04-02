@@ -22,14 +22,18 @@ public class DRPodcasts {
 	};
 
 	public static void main(String[] args) throws Exception {
-		loadDRFeedList();
+		loadDRFeedList(new ItemListener() {
+            public void onItem(PodCastItem item) {
+                System.out.println(item);
+            }
+        });
 	}
 
-	public static void loadDRFeedList() throws SAXException, ParserConfigurationException, IOException {
+	public static void loadDRFeedList(ItemListener listener) throws SAXException, ParserConfigurationException, IOException {
 		for (String url : urls) {
 			InputSource is = new InputSource(url);
 			is.setEncoding("UTF-8");
-			ContentMiddleHandler eh = new ContentMiddleHandler();
+			MainAreaFinder eh = new MainAreaFinder(listener);
 			XmlPushParser xpp = new XmlPushParser(eh);
 			System.out.println("======== " + url + " =======");
 			xpp.parseHtml(is, xpp);

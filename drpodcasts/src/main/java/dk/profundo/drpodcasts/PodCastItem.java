@@ -23,10 +23,10 @@ public class PodCastItem {
 		this.description = description;
 	}
 
-	String link;
-	String feed;
-	String title;
-	String description;
+	public String link;
+	public String feed;
+	public String title;
+	public String description;
 
 	public String toString() {
 		return "Item[" + title + "," + link + "," + feed + //
