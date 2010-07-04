@@ -7,11 +7,13 @@ package profundo.pushparser;
 
 import org.xml.sax.SAXException;
 
+import profundo.pushparser.util.NoopElementHandler;
+
 /**
  *
  * @author ermh
  */
-public class CharacterHandler extends ElementAdapter {
+public class CharacterHandler extends NoopElementHandler {
     StringBuilder b = new StringBuilder();
 
     @Override

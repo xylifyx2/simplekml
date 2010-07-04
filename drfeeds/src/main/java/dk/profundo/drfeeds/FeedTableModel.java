@@ -45,11 +45,6 @@ public class FeedTableModel extends DefaultListModel {
                 ItemListener il = new ItemListener() {
 
                     public void onItem(PodCastItem item) {
-                        try {
-                            Thread.sleep(200);
-                        } catch (InterruptedException ex) {
-                            Logger.getLogger(FeedTableModel.class.getName()).log(Level.SEVERE, null, ex);
-                        }
                         p(item);
                     }
                 };

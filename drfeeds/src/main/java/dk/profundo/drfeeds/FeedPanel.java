@@ -21,8 +21,8 @@ public class FeedPanel extends javax.swing.JPanel {
     /** Creates new form FeedPanel */
     public FeedPanel() {
         initComponents();
-        entryTable.setModel(model);
-        entryTable.setCellRenderer(new FeedCell());
+        scrollableList1.setModel(model);
+        scrollableList1.setCellRenderer(new FeedCell());
     }
 
     /** This method is called from within the constructor to
@@ -34,9 +34,17 @@ public class FeedPanel extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        entryTable = new javax.swing.JList();
         loadFeeds = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        entryTable = new javax.swing.JList();
+        scrollableList1 = new dk.profundo.drfeeds.ScrollableList();
+
+        entryTable.setModel(new javax.swing.AbstractListModel() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public Object getElementAt(int i) { return strings[i]; }
+        });
+        entryTable.setFixedCellWidth(200);
 
         loadFeeds.setText("Load Feeds");
         loadFeeds.addActionListener(new java.awt.event.ActionListener() {
@@ -45,22 +53,21 @@ public class FeedPanel extends javax.swing.JPanel {
             }
         });
 
-        entryTable.setModel(new javax.swing.AbstractListModel() {
+        scrollableList1.setModel(new javax.swing.AbstractListModel() {
             String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
             public int getSize() { return strings.length; }
             public Object getElementAt(int i) { return strings[i]; }
         });
-        jScrollPane1.setViewportView(entryTable);
+        jScrollPane1.setViewportView(scrollableList1);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(150, 150, 150)
-                .add(loadFeeds)
-                .addContainerGap(151, Short.MAX_VALUE))
             .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, 415, Short.MAX_VALUE)
+            .add(layout.createSequentialGroup()
+                .add(loadFeeds)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -80,6 +87,7 @@ public class FeedPanel extends javax.swing.JPanel {
     private javax.swing.JList entryTable;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JButton loadFeeds;
+    private dk.profundo.drfeeds.ScrollableList scrollableList1;
     // End of variables declaration//GEN-END:variables
 
 }

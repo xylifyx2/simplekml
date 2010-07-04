@@ -12,6 +12,7 @@
 package dk.profundo.drfeeds;
 
 import dk.profundo.drpodcasts.PodCastItem;
+import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -39,10 +40,11 @@ public class FeedCell extends javax.swing.JPanel implements ListCellRenderer {
         title = new javax.swing.JLabel();
         body = new javax.swing.JLabel();
 
-        title.setFont(new java.awt.Font("Lucida Grande", 0, 14)); // NOI18N
-        title.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        title.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        title.setHorizontalAlignment(javax.swing.SwingConstants.LEFT);
         title.setText("Alle Tiders Historie");
 
+        body.setFont(new java.awt.Font("Times New Roman", 0, 12)); // NOI18N
         body.setText("<html>Alle Tiders Histore er levende historieformidling, der tager rundt i landet for at fortælle om de mennesker og begivenheder, der har præget vores fælles fortid og sætter spor i vores samtid.");
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
@@ -71,6 +73,8 @@ public class FeedCell extends javax.swing.JPanel implements ListCellRenderer {
         PodCastItem item = (PodCastItem) value;
         body.setText(item.description);
         title.setText(item.title);
+        
+        setBackground(isSelected ? Color.LIGHT_GRAY : Color.WHITE);
         return this;
     }
 

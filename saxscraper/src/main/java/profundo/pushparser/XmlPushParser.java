@@ -54,22 +54,35 @@ public class XmlPushParser extends DefaultHandler {
 		parser.parse(in);
 	}
 
-	static SAXParserFactory sf = jtidySaxParser();
+	static SAXParserFactory sf;
 
 	private static SAXParserFactory jtidySaxParser() {
+		if (sf == null) {
+			synchronized (XmlPushParser.class) {
+				if (sf == null) {
+					newHtmlParserFactory();
+				}
+			}
+		}
+		return sf;
+	}
+
+	private static void newHtmlParserFactory() {
 		try {
-			return (SAXParserFactory) Class.forName(
-					"org.w3c.tidy.JTidySAXParserFactory").newInstance();
+			sf = (SAXParserFactory) Class.forName(
+			"org.w3c.tidy.JTidySAXParserFactory")
+			.newInstance();
 		} catch (Exception e) {
-			Logger.getAnonymousLogger().log(Level.SEVERE,
-					"no org.w3c.tidy.JTidySAXParserFactory",e); // TODO
-			return SAXParserFactory.newInstance();
+			Logger logger = Logger.getAnonymousLogger();
+			logger.log(Level.SEVERE,
+					"no org.w3c.tidy.JTidySAXParserFactory", e); // TODO
+			sf = SAXParserFactory.newInstance();
 		}
 	}
 
 	public void parseHtml(InputSource in, DefaultHandler ch)
 			throws SAXException, IOException, ParserConfigurationException {
-		SAXParser parser = sf.newSAXParser();
+		SAXParser parser = jtidySaxParser().newSAXParser();
 		parser.parse(in, ch);
 	}
 

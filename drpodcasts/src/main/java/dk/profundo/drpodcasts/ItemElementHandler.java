@@ -7,15 +7,15 @@ package dk.profundo.drpodcasts;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import profundo.pushparser.CharacterHandler;
-import profundo.pushparser.ElementAdapter;
 import profundo.pushparser.ElementHandler;
 import profundo.pushparser.XmlPushParser;
+import profundo.pushparser.util.NoopElementHandler;
 
 /**
  *
  * @author ermh
  */
-public class ItemElementHandler extends ElementAdapter {
+public class ItemElementHandler extends NoopElementHandler {
     PodCastItem item = new PodCastItem();
     State state = State.START;
     CharacterHandler characters;
@@ -68,6 +68,8 @@ public class ItemElementHandler extends ElementAdapter {
                 && "XML".equals(attributes.getValue("title"))) {
             item.feed = attributes.getValue("href");
             state = State.DONE;
+        } else if ("div".equals(qName) && "stamp".equals(attributes.getValue("class"))) {
+        	
         }
     }
 

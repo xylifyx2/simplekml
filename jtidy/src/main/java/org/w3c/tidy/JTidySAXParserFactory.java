@@ -82,6 +82,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Erik Martino <erik.martino@gmail.com>
  */
+
 public class JTidySAXParserFactory extends SAXParserFactory {
 
     public SAXParser newSAXParser() throws ParserConfigurationException, SAXException {
@@ -97,6 +98,7 @@ public class JTidySAXParserFactory extends SAXParserFactory {
 
     static class JTidySAXParser extends SAXParser {
 
+    	@SuppressWarnings("deprecation")
         public Parser getParser() throws SAXException {
             throw new UnsupportedOperationException();
         }
@@ -185,7 +187,6 @@ public class JTidySAXParserFactory extends SAXParserFactory {
         }
 
         public void parse(String systemId) throws IOException, SAXException {
-            URL url = new URL(systemId);
             parse(new InputSource(systemId));
         }
 
@@ -204,7 +205,8 @@ public class JTidySAXParserFactory extends SAXParserFactory {
      * @param errorHandler
      * @throws SAXException
      */
-    static protected void parseInputStream(InputStream byteStream, String encoding, ContentHandler contentHandler, ErrorHandler errorHandler) throws SAXException {
+    @SuppressWarnings("unchecked")
+	static protected void parseInputStream(InputStream byteStream, String encoding, ContentHandler contentHandler, ErrorHandler errorHandler) throws SAXException {
         Report report = new Report();
         Configuration configuration = new Configuration(report);
         configuration.setInCharEncodingName(encoding);

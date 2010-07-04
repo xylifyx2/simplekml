@@ -158,7 +158,7 @@ public class StreamInJavaImpl implements StreamIn
      */
     public int readCharFromStream()
     {
-        int c;
+    	int c;
         try
         {
             c = reader.read();

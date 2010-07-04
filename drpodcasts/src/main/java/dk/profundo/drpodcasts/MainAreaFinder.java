@@ -6,15 +6,15 @@ package dk.profundo.drpodcasts;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
-import profundo.pushparser.ElementAdapter;
 import profundo.pushparser.ElementHandler;
 import profundo.pushparser.XmlPushParser;
+import profundo.pushparser.util.NoopElementHandler;
 
 /**
  *
  * @author ermh
  */
-public class MainAreaFinder extends ElementAdapter {
+public class MainAreaFinder extends NoopElementHandler {
 	int c;
     private final ItemListener listener;
 
